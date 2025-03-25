@@ -8,7 +8,7 @@ sudo -i
 
 * curl找不到命令处理办法
 ```
-apt update
+apt-get install  curl
 ```
 * 进入文件夹
 ```
@@ -21,7 +21,7 @@ cd..
 
 * vps系统更新：
 ```
-apt-get install  curl
+apt update
 ````
 
 * 科技lion脚本：
