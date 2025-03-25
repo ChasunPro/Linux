@@ -6,14 +6,15 @@
 sudo -i
 ```
 
-* vps系统更新：
-```
 * curl找不到命令处理办法
 ```
 apt update
 ```
-apt-get install  curl
 
+* vps系统更新：
+```
+apt-get install  curl
+````
 
 * 科技lion脚本：
 ```
