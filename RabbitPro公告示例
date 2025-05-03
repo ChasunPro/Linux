@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>移动端优化页面</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+            background-color: #f8f9fa;
+            line-height: 1.4;
+            -webkit-text-size-adjust: 100%;
+            font-size: 14px;
+        }
+        
+        .neu-textbox {
+            font-size: 13px;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            background: #f5f5f5;
+            box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.1), 
+                       -3px -3px 6px rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+            display: block;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .ad-textbox {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            position: relative;
+        }
+        
+        .ad-textbox::after {
+            content: "AD";
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #409EFF;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-bottom-left-radius: 8px;
+        }
+        
+        .ad-link {
+            color: #0066cc;
+            font-weight: bold;
+            text-decoration: underline;
+            word-break: break-all;
+            font-size: 13px;
+        }
+
+        .neu-textbox:hover {
+            transform: translateY(-2px);
+            box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15), 
+                       -4px -4px 8px rgba(255, 255, 255, 0.9);
+        }
+
+        #marquee-container {
+            border-radius: 15px;
+            margin: 15px 0;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+            background: #f5f5f5;
+            padding: 3px;
+        }
+
+        #marquee {
+            font-size: 13px;
+            padding: 8px;
+            margin: 0;
+            color: #ff4757;
+            font-weight: bold;
+            white-space: nowrap;
+            display: inline-block;
+            animation: marquee-animation 15s linear infinite;
+        }
+
+        @keyframes marquee-animation {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            margin: 15px 0;
+            position: relative;
+            z-index: 1;
+            flex-wrap: wrap;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 15px;
+            background: linear-gradient(135deg, #409EFF, #337ecc);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            text-align: center;
+            border-radius: 8px;
+            flex: 1 1 45%;
+            min-width: 100px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #337ecc, #2a6cb8);
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 100;
+            backdrop-filter: blur(3px);
+        }
+
+        .message-box {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+            max-width: 280px;
+            padding: 15px;
+            background-color: white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            text-align: center;
+            z-index: 101;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -45%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+
+        input[type="checkbox"] {
+            display: none;
+        }
+
+        #toggle1:checked ~ .overlay,
+        #toggle2:checked ~ .overlay,
+        #toggle3:checked ~ .overlay {
+            display: block;
+        }
+
+        #toggle1:checked ~ .message-box-1,
+        #toggle2:checked ~ .message-box-2,
+        #toggle3:checked ~ .message-box-3 {
+            display: block;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 20px;
+            color: #777;
+            cursor: pointer;
+            background: none;
+            border: none;
+            transition: color 0.2s;
+            line-height: 1;
+        }
+
+        .close-button:hover {
+            color: #333;
+        }
+
+        .qun {
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 8px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .background-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        .info-icon {
+            margin-right: 6px;
+            font-size: 16px;
+            vertical-align: middle;
+        }
+
+        a {
+            color: #409EFF;
+            text-decoration: none;
+            transition: color 0.2s;
+            word-break: break-all;
+            font-size: 13px;
+        }
+
+        a:hover {
+            color: #337ecc;
+            text-decoration: underline;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+                font-size: 13px;
+            }
+            
+            .neu-textbox {
+                padding: 8px 10px;
+                font-size: 12px;
+                border-radius: 6px;
+            }
+            
+            .button {
+                padding: 8px 12px;
+                font-size: 12px;
+                flex: 1 1 100%;
+                margin-bottom: 6px;
+                border-radius: 6px;
+            }
+            
+            .button-container {
+                flex-direction: column;
+                gap: 6px;
+                margin: 12px 0;
+            }
+            
+            #marquee {
+                font-size: 12px;
+                padding: 6px;
+            }
+            
+            .message-box {
+                padding: 12px;
+                width: 90%;
+            }
+            
+            .info-icon {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 广告位 -->
+    <div class="neu-textbox ad-textbox">
+        <span class="info-icon">🔗</span>
+        <span style="color:#6495ED;">自用代理推荐 - 高速稳定：<a href="https://www.feiyu55.top/web/#/login?code=6y4nghFh" target="_blank">点击此处跳转</a></span>
+    </div>    
+    <div class="neu-textbox">
+        <span class="info-icon">💡</span>
+        <span style="color:#4B0080;">请优先账密登录，京东账号长期稳定不掉线。</span>
+    </div>
+    
+    <div class="neu-textbox">
+        <span class="info-icon">💡</span>
+        <span style="color:#6495ED;">登录完成后，请务必 '扫码关注' 以便给您推送京东资产信息。</span>
+    </div>
+    
+    <div class="neu-textbox">
+        <span class="info-icon">💡</span>
+        <span style="color:#FF69B4;">还有其他羊毛脚本，如有需要请加机器人。</span>
+    </div>
+
+    <div id="marquee-container">
+        <div id="marquee">🗣重点强调：关闭免密支付，开启支付验密，绑定公众号。</div>
+    </div>
+
+    <input type="checkbox" id="toggle1">
+    <input type="checkbox" id="toggle2">
+    <input type="checkbox" id="toggle3">
+
+    <div class="button-container">
+        <label for="toggle1" class="button">WX机器人</label>
+        <label for="toggle2" class="button">QQ机器人</label>
+        <label for="toggle3" class="button">TG机器人</label>
+    </div>
+
+    <div class="overlay"></div>
+
+    <div class="message-box message-box-1">
+        <label for="toggle1" class="close-button">×</label>
+        <img src="此处放二维码链接" class="qun" alt="微信机器人二维码">
+    </div>
+
+    <div class="message-box message-box-2">
+        <label for="toggle2" class="close-button">×</label>
+        <img src="此处放二维码链接" class="qun" alt="QQ机器人二维码">
+    </div>
+    
+    <div class="message-box message-box-3">
+        <label for="toggle3" class="close-button">×</label>
+        <div style="padding: 10px;">
+            <p style="margin-bottom: 10px;">请点击下方按钮跳转到TG机器人</p>
+            <a href="此处放TG机器人链接后面可自定义" class="button" style="display: inline-block; padding: 8px 15px; margin-top: 5px;" target="_blank">前往TG机器人</a>
+        </div>
+    </div>
+</body>
+</html>
