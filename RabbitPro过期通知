@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>过期通知</title>
+</head>
+<body>
+<div style="text-align:center;"><h4>您的账户【{{ pin }}】({{ remarks }})<p style="color:red; font-size:20px;">账号已过期！</p >为了不影响您后续的正常使用请您及时重新登录</br>
+<Center><h4><a href="https://jd.564321.xyz/"><p style="color:red; font-size:17px;">-\\\点此处快速登录///-</a><Center>
+</h5>
+如果无法打开就
+</h5>
+<Center><h4> <a href ="http://dl.564321.xyz:7001/"><p style="color:green; font-size:17px;">-\\\点此处(备用网址)///-</a><Center>
+</h5>
+</h4> 
+<br>
+收到通知请及时更新</br>为了防止占用资源，系统会自动不定时清理过期账号。
