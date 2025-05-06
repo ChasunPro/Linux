@@ -1,0 +1,465 @@
+addEventListener('fetch', event => {
+  event.respondWith(handleRequest(event.request))
+})
+
+async function handleRequest(request) {
+  const html = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="shortcut icon" href="https://www.baidu.com/favicon.ico" type="image/x-icon"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>chasun的羊毛车</title>
+  <style>
+    :root {
+      --bg-color: #f8fafc;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --gradient-start: #4f46e5;
+      --gradient-end: #06b6d4;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-color);
+      color: var(--text-primary);
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      background-image: radial-gradient(circle at 10% 20%, rgba(233, 213, 255, 0.1) 0%, rgba(243, 244, 246, 0.1) 90%);
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: inline-block;
+    }
+    
+    .subtitle {
+      color: var(--text-secondary);
+      font-weight: 400;
+      margin-top: 0;
+      font-size: 1.1rem;
+    }
+
+    /* 大卡片 */
+    .large-links-container {
+      margin-bottom: 1.5rem;
+    }
+    
+    .link-card.large {
+      display: flex;
+      align-items: center;
+      padding: 1.2rem;
+      margin: 0.8rem 0;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      cursor: pointer;
+      transition: all 0.3s;
+      border-left: 4px solid var(--card-color);
+    }
+    
+    .large .link-icon {
+      font-size: 1.5rem;
+      margin-right: 1rem;
+    }
+    
+    .large .link-name {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    
+    .large .link-url {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+    
+    .large .link-arrow {
+      margin-left: auto;
+      color: var(--text-secondary);
+      transition: transform 0.3s;
+    }
+    
+    /* 小卡片 */
+    .small-links-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+      margin-top: 1rem;
+    }
+    
+    .link-card.small {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      background: white;
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      cursor: pointer;
+      transition: all 0.2s;
+      border-top: 2px solid var(--card-color);
+      min-height: 60px;
+    }
+    
+    .small .link-icon {
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+    
+    .small .link-name {
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-align: center;
+    }
+    
+    /* 通用交互效果 */
+    .link-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .large:hover .link-arrow {
+      transform: translateX(3px);
+    }
+    
+    /* 分类标题 */
+    .category-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 1.5rem 0 0.5rem 0;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+    }
+    
+    .category-title::before {
+      content: "";
+      display: inline-block;
+      width: 4px;
+      height: 16px;
+      background: linear-gradient(to bottom, var(--gradient-start), var(--gradient-end));
+      margin-right: 8px;
+      border-radius: 2px;
+    }
+    
+    /* 图片弹出层 - 修改后样式 */
+    .image-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: auto;
+      height: auto;
+      max-width: 90vw;
+      max-height: 90vh;
+      background: rgba(255, 255, 255, 0.98);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    
+    .image-popup.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .popup-image {
+      max-width: 80%;
+      max-height: 60vh;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .popup-caption {
+      color: var(--text-primary);
+      margin-top: 15px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      text-align: center;
+    }
+    
+    .popup-description {
+      color: var(--text-secondary);
+      margin-top: 8px;
+      font-size: 0.9rem;
+      text-align: center;
+      max-width: 80%;
+      line-height: 1.4;
+    }
+    
+    .close-popup {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+      transition: color 0.2s;
+    }
+    
+    .close-popup:hover {
+      color: var(--text-primary);
+    }
+    
+    /* 遮罩层 */
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .popup-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    /* 响应式微调 */
+    @media (max-width: 768px) {
+      .small-links-container {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 6px;
+      }
+      
+      .link-card.small {
+        min-height: 50px;
+        padding: 6px;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .subtitle {
+        font-size: 1rem;
+      }
+      
+      .category-title {
+        font-size: 1.1rem;
+      }
+      
+      .popup-image {
+        max-width: 95%;
+      }
+      
+      .popup-caption {
+        font-size: 1rem;
+      }
+      
+      .popup-description {
+        font-size: 0.8rem;
+      }
+      
+      .image-popup {
+        padding: 15px;
+        max-width: 95vw;
+      }
+    }
+    
+    /* 动画效果 */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .link-card {
+      animation: fadeIn 0.3s ease-out forwards;
+      opacity: 0;
+    }
+    
+    .link-card:nth-child(1) { animation-delay: 0.1s; }
+    .link-card:nth-child(2) { animation-delay: 0.2s; }
+    .link-card:nth-child(3) { animation-delay: 0.3s; }
+    .link-card:nth-child(4) { animation-delay: 0.4s; }
+    .link-card:nth-child(5) { animation-delay: 0.5s; }
+    .link-card:nth-child(6) { animation-delay: 0.6s; }
+    .link-card:nth-child(7) { animation-delay: 0.7s; }
+    .link-card:nth-child(8) { animation-delay: 0.8s; }
+    
+    /* 分割线 */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent);
+      margin: 2rem 0;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>羊毛🚗</h1>
+      <p class="subtitle">多种代挂 · 高效稳定 · 强烈推荐</p>
+    </div>
+    
+    <!-- 大卡片 -->
+    <h3 class="category-title">线路选择</h3>
+    <div class="large-links-container">
+      
+    <div class="link-card large" 
+         onclick="window.open('https://jd.chasun.top', '_blank')"
+         style="--card-color: #4285F4">
+      <div class="link-icon">🚀</div>
+      <div class="link-content">
+        <span class="link-name">线路一</span>
+        <span class="link-url">jd.chasun.top</span>
+      </div>
+      <div class="link-arrow">→</div>
+    </div>
+  
+    <div class="link-card large" 
+         onclick="window.open('https://jd.564321.xyz', '_blank')"
+         style="--card-color: #00809D">
+      <div class="link-icon">✈️</div>
+      <div class="link-content">
+        <span class="link-name">线路二</span>
+        <span class="link-url">jd.564321.xyz</span>
+      </div>
+      <div class="link-arrow">→</div>
+    </div>
+  
+    <div class="link-card large" 
+         onclick="window.open('http://dl.564321.xyz:7001', '_blank')"
+         style="--card-color: #d12165">
+      <div class="link-icon">🚄</div>
+      <div class="link-content">
+        <span class="link-name">线路三</span>
+        <span class="link-url">dl.564321.xyz</span>
+      </div>
+      <div class="link-arrow">→</div>
+    </div>
+  
+    </div>
+    
+    <div class="divider"></div>
+    
+    <!-- 小卡片 -->
+    <h3 class="category-title">其他工具</h3>
+    <div class="small-links-container">
+      
+        <div class="link-card small" 
+             onclick="showImagePopup('https://github.chasun.top/https://github.com/ChasunPro/picx-images-hosting/raw/master/qrcode_1746519953540.54xz1iw63y.webp', 'QQ群', '机器人在群聊里')"
+             style="--card-color: #F38020">
+          <div class="link-icon">🐧</div>
+          <span class="link-name">QQ</span>
+        </div>
+      
+        <div class="link-card small" 
+             onclick="showImagePopup('https://github.chasun.top/https://github.com/ChasunPro/picx-images-hosting/raw/master/wx.7zqlhpmq44.webp', '微信机器人', '发送‘拉群’进群')"
+             style="--card-color: #10A37F">
+          <div class="link-icon">💬</div>
+          <span class="link-name">微信</span>
+        </div>
+      
+        <div class="link-card small" 
+             onclick="window.open('https://www.baidu.com', '_blank')"
+             style="--card-color: #1DA1F2">
+          <div class="link-icon">🧩</div>
+          <span class="link-name">导航</span>
+        </div>
+      
+    </div>
+  </div>
+  
+  <!-- 图片弹出层 -->
+  <div class="popup-overlay" id="popupOverlay"></div>
+  <div class="image-popup" id="imagePopup">
+    <button class="close-popup" onclick="closeImagePopup()">×</button>
+    <img class="popup-image" id="popupImage" src="" alt="Popup Image">
+    <div class="popup-caption" id="popupCaption"></div>
+    <div class="popup-description" id="popupDescription"></div>
+  </div>
+  
+  <script>
+    // 图片弹出功能
+    function showImagePopup(imageUrl, caption, description) {
+      const popup = document.getElementById('imagePopup');
+      const overlay = document.getElementById('popupOverlay');
+      const popupImage = document.getElementById('popupImage');
+      const popupCaption = document.getElementById('popupCaption');
+      const popupDescription = document.getElementById('popupDescription');
+      
+      popupImage.src = imageUrl;
+      popupCaption.textContent = caption;
+      popupDescription.textContent = description;
+      
+      popup.classList.add('active');
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeImagePopup() {
+      const popup = document.getElementById('imagePopup');
+      const overlay = document.getElementById('popupOverlay');
+      
+      popup.classList.remove('active');
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    
+    // 点击遮罩层关闭
+    document.getElementById('popupOverlay').addEventListener('click', closeImagePopup);
+    
+    // 原有卡片点击事件
+    document.querySelectorAll('.link-card').forEach(card => {
+      const onclick = card.getAttribute('onclick');
+      if (!onclick || !onclick.includes('showImagePopup')) {
+        card.addEventListener('click', function() {
+          const url = this.getAttribute('onclick').match(/'([^']+)'/)[1];
+          window.open(url, '_blank');
+        });
+      }
+    });
+    
+    // ESC键关闭
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeImagePopup();
+      }
+    });
+  </script>
+</body>
+</html>`;
+
+  return new Response(html, {
+    headers: {
+      'Content-Type': 'text/html; charset=utf-8',
+    },
+  });
+}
