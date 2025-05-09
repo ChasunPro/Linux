@@ -28,6 +28,9 @@ apt update
 ```
 curl -sS -O https://kejilion.pro/kejilion.sh && chmod +x kejilion.sh && ./kejilion.sh
 ```
+```
+bash <(curl -sL kejilion.sh)
+```
 
 * 通过yum安装wegt
 ```
