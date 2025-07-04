@@ -130,3 +130,30 @@ curl -fsSL https://raw.githubusercontent.com/eooce/ssh_tool/main/ssh_tool.sh -o 
 ```
 wget -qO- git.io/besttrace | bash
 ```
+* DD脚本：
+下载（当前系统是  Linux）
+国外服务器：
+```curl -O https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh```
+国内服务器：
+```curl -O https://mirror.ghproxy.com/https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh```
+运行：
+```ash reinstall.sh
+DD开始：
+例：
+```bash reinstall.sh debian 12```
+bash reinstall.sh centos      9
+                  anolis      7|8
+                  alma        8|9
+                  rocky       8|9
+                  oracle      8|9
+                  redhat      8|9   --img='http://xxx.qcow2'
+                  opencloudos 8|9
+                  fedora      39|40
+                  debian      9|10|11|12
+                  openeuler   20.03|22.03|24.03
+                  ubuntu      20.04|22.04|24.04
+                  alpine      3.17|3.18|3.19|3.20
+                  opensuse    15.5|15.6|tumbleweed
+                  kali
+                  arch
+                  gentoo
