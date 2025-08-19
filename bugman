@@ -1,2 +1,3 @@
 No module named 'PIL'处理方法
-终端发送：```pip3 install Pillow```
+终端发送：
+```pip3 install Pillow```
